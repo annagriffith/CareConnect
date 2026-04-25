@@ -36,8 +36,8 @@ CareConnect focuses on the day-to-day workflow of service coordination rather th
 
 ## Repository Name
 
-The GitHub repository is named `careconnect-disability-service-app`.
+The GitHub repository is named `CareConnect`.
 
 ## Project Name
 
-GitHub repository: [careconnect-disability-service-app](https://github.com/annagriffith/CareConnect)
+GitHub repository: [CareConnect](https://github.com/annagriffith/CareConnect)
