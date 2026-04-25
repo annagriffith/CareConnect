@@ -1,0 +1,1295 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>CareConnect - Disability Service Management App</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Space+Grotesk:wght@500;600;700&display=swap" rel="stylesheet" />
+  <style>
+    :root {
+      --bg: #071019;
+      --bg-soft: #0b1624;
+      --panel: rgba(10, 17, 28, 0.88);
+      --panel-strong: #101c2f;
+      --line: rgba(165, 182, 212, 0.14);
+      --text: #edf3fb;
+      --muted: #97a7bd;
+      --accent: #73d8c4;
+      --accent-2: #8aa5ff;
+      --warn: #d9b36d;
+      --danger: #ee8a92;
+      --shadow: 0 26px 70px rgba(0, 0, 0, 0.42);
+      --radius: 20px;
+    }
+
+    * { box-sizing: border-box; }
+
+    html {
+      scroll-behavior: smooth;
+    }
+
+    body {
+      margin: 0;
+      min-height: 100vh;
+      color: var(--text);
+      font-family: "Inter", "Segoe UI", sans-serif;
+      background:
+        radial-gradient(circle at top left, rgba(138, 165, 255, 0.18), transparent 30%),
+        radial-gradient(circle at 86% 14%, rgba(115, 216, 196, 0.14), transparent 24%),
+        linear-gradient(160deg, #050a12 0%, #09121d 50%, #0b1626 100%);
+    }
+
+    body::before {
+      content: "";
+      position: fixed;
+      inset: 0;
+      pointer-events: none;
+      background-image:
+        linear-gradient(rgba(255, 255, 255, 0.03) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(255, 255, 255, 0.03) 1px, transparent 1px);
+      background-size: 42px 42px;
+      -webkit-mask-image: linear-gradient(to bottom, rgba(0,0,0,0.75), transparent 88%);
+      mask-image: linear-gradient(to bottom, rgba(0,0,0,0.75), transparent 88%);
+      opacity: 0.35;
+    }
+
+    .shell {
+      width: min(1320px, calc(100% - 28px));
+      margin: 0 auto;
+      padding: 20px 0 34px;
+      position: relative;
+      z-index: 1;
+    }
+
+    .topbar {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 16px;
+      padding: 16px 20px;
+      border: 1px solid var(--line);
+      border-radius: 18px;
+      background: rgba(8, 14, 24, 0.84);
+      -webkit-backdrop-filter: blur(16px);
+      backdrop-filter: blur(16px);
+      box-shadow: 0 18px 40px rgba(0, 0, 0, 0.28);
+      animation: rise 700ms ease-out both;
+    }
+
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      min-width: 0;
+    }
+
+    .mark {
+      width: 46px;
+      height: 46px;
+      border-radius: 14px;
+      display: grid;
+      place-items: center;
+      background: linear-gradient(145deg, rgba(115, 216, 196, 0.95), rgba(138, 165, 255, 0.88));
+      color: #06111a;
+      font: 700 1.15rem/1 "Space Grotesk", sans-serif;
+      box-shadow: 0 12px 26px rgba(115, 216, 196, 0.22);
+      flex: none;
+    }
+
+    .brand h1 {
+      margin: 0;
+      font-family: "Space Grotesk", sans-serif;
+      letter-spacing: -0.04em;
+      font-size: clamp(1.2rem, 2vw, 1.75rem);
+    }
+
+    .brand p {
+      margin: 3px 0 0;
+      color: var(--muted);
+      font-size: 0.89rem;
+    }
+
+    .status-chip {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 9px 12px;
+      border: 1px solid var(--line);
+      border-radius: 999px;
+      color: var(--muted);
+      background: rgba(13, 21, 34, 0.78);
+      white-space: nowrap;
+      font-size: 0.92rem;
+    }
+
+    .status-dot {
+      width: 10px;
+      height: 10px;
+      border-radius: 999px;
+      background: var(--accent);
+      box-shadow: 0 0 0 6px rgba(102, 224, 194, 0.12);
+    }
+
+    .hero {
+      display: grid;
+      grid-template-columns: 1.3fr 0.7fr;
+      gap: 16px;
+      margin-top: 16px;
+    }
+
+    .panel {
+      border: 1px solid var(--line);
+      border-radius: var(--radius);
+      background: var(--panel);
+      -webkit-backdrop-filter: blur(16px);
+      backdrop-filter: blur(16px);
+      box-shadow: var(--shadow);
+    }
+
+    .hero-main {
+      padding: 24px;
+      position: relative;
+      overflow: hidden;
+      animation: rise 780ms ease-out 80ms both;
+    }
+
+    .hero-main::after {
+      content: "";
+      position: absolute;
+      inset: auto -8% -38% auto;
+      width: 300px;
+      height: 300px;
+      border-radius: 50%;
+      background: radial-gradient(circle, rgba(138, 165, 255, 0.22), transparent 68%);
+      filter: blur(10px);
+      pointer-events: none;
+    }
+
+    .eyebrow {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 7px 11px;
+      border-radius: 999px;
+      border: 1px solid rgba(115, 216, 196, 0.18);
+      color: #9ee7d9;
+      background: rgba(115, 216, 196, 0.06);
+      text-transform: uppercase;
+      letter-spacing: 0.12em;
+      font-size: 0.72rem;
+      font-weight: 800;
+    }
+
+    .hero h2 {
+      margin: 14px 0 10px;
+      font-family: "Space Grotesk", sans-serif;
+      font-size: clamp(2rem, 4vw, 3.5rem);
+      line-height: 1;
+      letter-spacing: -0.06em;
+      max-width: 13ch;
+    }
+
+    .hero p {
+      margin: 0;
+      color: var(--muted);
+      font-size: 0.98rem;
+      line-height: 1.65;
+      max-width: 58ch;
+    }
+
+    .hero-actions {
+      display: flex;
+      gap: 12px;
+      flex-wrap: wrap;
+      margin-top: 18px;
+    }
+
+    button,
+    input,
+    select,
+    textarea {
+      font: inherit;
+    }
+
+    .btn {
+      appearance: none;
+      border: 0;
+      border-radius: 12px;
+      padding: 11px 15px;
+      font-weight: 700;
+      letter-spacing: 0.01em;
+      cursor: pointer;
+      transition: transform 180ms ease, box-shadow 180ms ease, background 180ms ease, opacity 180ms ease;
+    }
+
+    .btn:hover { transform: translateY(-1px); }
+    .btn:active { transform: translateY(0); }
+
+    .btn-primary {
+      background: linear-gradient(135deg, #73d8c4, #9be8d9);
+      color: #072012;
+      box-shadow: 0 12px 28px rgba(115, 216, 196, 0.2);
+    }
+
+    .btn-secondary {
+      background: rgba(255, 255, 255, 0.05);
+      color: var(--text);
+      border: 1px solid var(--line);
+    }
+
+    .hero-side {
+      display: grid;
+      gap: 12px;
+      padding: 16px;
+      -webkit-backdrop-filter: blur(16px);
+      backdrop-filter: blur(16px);
+      animation: rise 820ms ease-out 140ms both;
+    }
+
+    .hero-side .section-head {
+      margin-bottom: 0;
+    }
+
+    .hero-side .section-head p {
+      max-width: 32ch;
+    }
+
+    .metric-grid {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 10px;
+    }
+
+    .metric {
+      padding: 16px;
+      border-radius: 16px;
+      background: linear-gradient(180deg, rgba(255, 255, 255, 0.04), rgba(255, 255, 255, 0.02));
+      border: 1px solid rgba(165, 182, 212, 0.12);
+      min-height: 98px;
+    }
+
+    .metric span {
+      display: block;
+      color: var(--muted);
+      font-size: 0.84rem;
+      margin-bottom: 7px;
+    }
+
+    .metric strong {
+      display: block;
+      font-family: "Space Grotesk", sans-serif;
+      font-size: 1.7rem;
+      letter-spacing: -0.05em;
+    }
+
+    .metric small {
+      display: block;
+      margin-top: 7px;
+      color: var(--muted);
+      font-size: 0.82rem;
+    }
+
+    .health-list {
+      display: grid;
+      gap: 10px;
+      padding: 4px 2px 2px;
+    }
+
+    .health-item {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      padding: 11px 13px;
+      border-radius: 14px;
+      background: rgba(9, 15, 24, 0.72);
+      border: 1px solid rgba(165, 182, 212, 0.1);
+    }
+
+    .health-item b {
+      display: block;
+      font-size: 0.9rem;
+    }
+
+    .health-item p {
+      margin: 4px 0 0;
+      font-size: 0.84rem;
+      color: var(--muted);
+    }
+
+    .badge {
+      padding: 6px 9px;
+      border-radius: 999px;
+      font-size: 0.72rem;
+      font-weight: 700;
+      white-space: nowrap;
+    }
+
+    .badge.ok { background: rgba(102, 224, 194, 0.14); color: var(--accent); }
+    .badge.warn { background: rgba(247, 199, 106, 0.16); color: var(--warn); }
+    .badge.alert { background: rgba(255, 127, 138, 0.16); color: var(--danger); }
+
+    .workspace {
+      display: grid;
+      grid-template-columns: 330px 1fr;
+      gap: 16px;
+      margin-top: 16px;
+      align-items: start;
+    }
+
+    .form-panel,
+    .list-panel {
+      padding: 20px;
+      animation: rise 820ms ease-out 180ms both;
+    }
+
+    .section-head {
+      display: flex;
+      align-items: flex-start;
+      justify-content: space-between;
+      gap: 12px;
+      margin-bottom: 16px;
+    }
+
+    .section-head h3 {
+      margin: 0;
+      font-family: "Space Grotesk", sans-serif;
+      font-size: 1.12rem;
+      letter-spacing: -0.04em;
+    }
+
+    .section-head p {
+      margin: 5px 0 0;
+      color: var(--muted);
+      font-size: 0.86rem;
+    }
+
+    .form {
+      display: grid;
+      gap: 10px;
+    }
+
+    .field {
+      display: grid;
+      gap: 7px;
+    }
+
+    .field label {
+      font-size: 0.82rem;
+      color: var(--muted);
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+    }
+
+    .field input,
+    .field select,
+    .field textarea {
+      width: 100%;
+      color: var(--text);
+      background: rgba(6, 13, 22, 0.92);
+      border: 1px solid rgba(165, 182, 212, 0.14);
+      border-radius: 12px;
+      padding: 11px 13px;
+      outline: none;
+      transition: border-color 160ms ease, box-shadow 160ms ease, transform 160ms ease;
+    }
+
+    .field input:focus,
+    .field select:focus,
+    .field textarea:focus {
+      border-color: rgba(102, 224, 194, 0.75);
+      box-shadow: 0 0 0 4px rgba(102, 224, 194, 0.12);
+    }
+
+    .field textarea {
+      min-height: 88px;
+      resize: vertical;
+    }
+
+    .split {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 12px;
+    }
+
+    .form-actions {
+      display: flex;
+      gap: 10px;
+      flex-wrap: wrap;
+      margin-top: 4px;
+    }
+
+    .hint {
+      margin: 0;
+      color: var(--muted);
+      font-size: 0.82rem;
+      line-height: 1.55;
+    }
+
+    .toolbar {
+      display: grid;
+      grid-template-columns: 1.25fr 0.52fr 0.52fr auto;
+      gap: 10px;
+      margin-bottom: 14px;
+    }
+
+    .toolbar input,
+    .toolbar select {
+      width: 100%;
+      padding: 11px 13px;
+      border-radius: 12px;
+      color: var(--text);
+      background: rgba(6, 13, 22, 0.92);
+      border: 1px solid rgba(165, 182, 212, 0.14);
+      outline: none;
+    }
+
+    .cards {
+      display: grid;
+      gap: 12px;
+    }
+
+    .card {
+      border-radius: 18px;
+      border: 1px solid rgba(165, 182, 212, 0.12);
+      background: linear-gradient(180deg, rgba(8, 15, 25, 0.94), rgba(7, 14, 22, 0.84));
+      padding: 16px;
+      display: grid;
+      gap: 12px;
+      transition: transform 180ms ease, border-color 180ms ease, background 180ms ease, box-shadow 180ms ease;
+    }
+
+    .card:hover {
+      transform: translateY(-2px);
+      border-color: rgba(138, 165, 255, 0.28);
+      box-shadow: 0 18px 32px rgba(0, 0, 0, 0.18);
+    }
+
+    .card-top {
+      display: flex;
+      justify-content: space-between;
+      gap: 14px;
+      align-items: flex-start;
+    }
+
+    .card-top::before {
+      content: "";
+      width: 10px;
+      height: 10px;
+      border-radius: 999px;
+      margin-top: 6px;
+      background: linear-gradient(145deg, rgba(115, 216, 196, 0.9), rgba(138, 165, 255, 0.9));
+      box-shadow: 0 0 0 5px rgba(115, 216, 196, 0.08);
+      flex: none;
+    }
+
+    .card-top > div {
+      flex: 1;
+      min-width: 0;
+    }
+
+    .client-name {
+      margin: 0;
+      font-family: "Space Grotesk", sans-serif;
+      font-size: 1.05rem;
+      letter-spacing: -0.04em;
+    }
+
+    .meta {
+      margin: 4px 0 0;
+      color: var(--muted);
+      font-size: 0.82rem;
+      line-height: 1.5;
+    }
+
+    .pill-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 7px;
+      justify-content: flex-end;
+    }
+
+    .pill {
+      padding: 6px 9px;
+      border-radius: 999px;
+      background: rgba(255, 255, 255, 0.05);
+      color: var(--text);
+      border: 1px solid rgba(165, 182, 212, 0.12);
+      font-size: 0.72rem;
+      font-weight: 600;
+      letter-spacing: 0.02em;
+    }
+
+    .pill.priority-high,
+    .priority-high { background: rgba(255, 127, 138, 0.14); color: #ffb3bb; }
+    .pill.priority-medium,
+    .priority-medium { background: rgba(247, 199, 106, 0.14); color: #ffd78f; }
+    .pill.priority-low,
+    .priority-low { background: rgba(102, 224, 194, 0.12); color: #97ead4; }
+
+    .details {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 9px;
+    }
+
+    .detail {
+      padding: 11px 12px;
+      border-radius: 14px;
+      background: rgba(255, 255, 255, 0.03);
+      border: 1px solid rgba(165, 182, 212, 0.1);
+      min-height: 78px;
+    }
+
+    .detail span {
+      display: block;
+      color: var(--muted);
+      font-size: 0.7rem;
+      margin-bottom: 5px;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+    }
+
+    .detail strong {
+      display: block;
+      font-size: 0.88rem;
+      line-height: 1.45;
+      word-break: break-word;
+    }
+
+    .card-actions {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      justify-content: flex-end;
+    }
+
+    .card-actions button {
+      border: 1px solid rgba(165, 182, 212, 0.14);
+      background: rgba(255, 255, 255, 0.03);
+      color: var(--text);
+      padding: 9px 11px;
+      border-radius: 11px;
+      cursor: pointer;
+      font-size: 0.84rem;
+    }
+
+    .card-actions .danger {
+      border-color: rgba(255, 127, 138, 0.24);
+      color: #ffb3bb;
+    }
+
+    .empty {
+      padding: 26px 16px;
+      text-align: center;
+      color: var(--muted);
+      border-radius: 18px;
+      border: 1px dashed rgba(165, 182, 212, 0.18);
+      background: rgba(255, 255, 255, 0.02);
+    }
+
+    .empty strong {
+      display: block;
+      margin-bottom: 8px;
+      color: var(--text);
+      font-size: 0.98rem;
+    }
+
+    .footer-note {
+      margin-top: 14px;
+      color: var(--muted);
+      font-size: 0.82rem;
+    }
+
+    .visually-hidden {
+      position: absolute !important;
+      width: 1px !important;
+      height: 1px !important;
+      padding: 0 !important;
+      margin: -1px !important;
+      overflow: hidden !important;
+      clip: rect(0, 0, 0, 0) !important;
+      white-space: nowrap !important;
+      border: 0 !important;
+    }
+
+    @keyframes rise {
+      from {
+        opacity: 0;
+        transform: translateY(14px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    @media (max-width: 1024px) {
+      .hero,
+      .workspace {
+        grid-template-columns: 1fr;
+      }
+
+      .toolbar {
+        grid-template-columns: 1fr 1fr 1fr;
+      }
+
+      .toolbar .search {
+        grid-column: 1 / -1;
+      }
+    }
+
+    @media (max-width: 720px) {
+      .shell {
+        width: min(100% - 18px, 100%);
+        padding-top: 12px;
+      }
+
+      .topbar,
+      .hero-main,
+      .hero-side,
+      .form-panel,
+      .list-panel {
+        padding: 18px;
+      }
+
+      .topbar {
+        flex-direction: column;
+        align-items: flex-start;
+      }
+
+      .topbar .status-chip {
+        align-self: stretch;
+        justify-content: center;
+      }
+
+      .metric-grid,
+      .split,
+      .details,
+      .toolbar {
+        grid-template-columns: 1fr;
+      }
+
+      .hero {
+        grid-template-columns: 1fr;
+      }
+
+      .hero h2 {
+        max-width: 100%;
+      }
+
+      .card-top {
+        flex-direction: column;
+      }
+
+      .pill-row,
+      .card-actions {
+        justify-content: flex-start;
+      }
+    }
+  </style>
+</head>
+<body>
+  <main class="shell">
+    <header class="topbar">
+      <div class="brand">
+        <div class="mark">CC</div>
+        <div>
+          <h1>CareConnect</h1>
+          <p>Disability service client and operations management app</p>
+        </div>
+      </div>
+      <div class="status-chip" id="storageStatus"><span class="status-dot"></span><span>Local storage active</span></div>
+    </header>
+
+    <section class="hero">
+      <article class="panel hero-main">
+        <span class="eyebrow">Operations console</span>
+        <h2>Manage client records, appointments, and service priorities in one workspace.</h2>
+        <p>
+          CareConnect centralises client records, appointment tracking, priorities, and follow-ups in a compact dashboard built to feel closer to a real internal service tool than a demo landing page.
+        </p>
+        <div class="hero-actions">
+          <button class="btn btn-primary" id="focusFormBtn" type="button">Add client record</button>
+          <button class="btn btn-secondary" id="seedDemoBtn" type="button">Load demo data</button>
+          <button class="btn btn-secondary" id="clearAllBtn" type="button">Clear all records</button>
+        </div>
+      </article>
+
+      <aside class="panel hero-side">
+        <div class="section-head">
+          <div>
+            <h3>Live overview</h3>
+            <p>Current load, upcoming work, and flagged follow-ups.</p>
+          </div>
+        </div>
+        <div class="metric-grid">
+          <div class="metric">
+            <span>Total clients</span>
+            <strong id="totalClients">0</strong>
+            <small>Stored locally in the browser</small>
+          </div>
+          <div class="metric">
+            <span>High priority</span>
+            <strong id="highPriorityCount">0</strong>
+            <small>Needs attention soon</small>
+          </div>
+          <div class="metric">
+            <span>Upcoming appointments</span>
+            <strong id="upcomingCount">0</strong>
+            <small>Next 7 days</small>
+          </div>
+          <div class="metric">
+            <span>Overdue follow-ups</span>
+            <strong id="overdueCount">0</strong>
+            <small>Needs a quick check-in</small>
+          </div>
+        </div>
+        <div class="health-list" aria-label="Operations snapshot">
+          <div class="health-item">
+            <div>
+              <b>Search and filters</b>
+              <p>Find clients by name, support worker, or service.</p>
+            </div>
+            <span class="badge ok">Live</span>
+          </div>
+          <div class="health-item">
+            <div>
+              <b>Edit and delete</b>
+              <p>Update records instantly from any card.</p>
+            </div>
+            <span class="badge warn">Quick actions</span>
+          </div>
+          <div class="health-item">
+            <div>
+              <b>Browser storage</b>
+              <p>Your data remains after refreshes.</p>
+            </div>
+            <span class="badge ok">Saved</span>
+          </div>
+        </div>
+      </aside>
+    </section>
+
+    <section class="workspace">
+      <article class="panel form-panel">
+        <div class="section-head">
+          <div>
+            <h3 id="formTitle">Add client</h3>
+            <p>Capture support details, timing, and operational context.</p>
+          </div>
+        </div>
+
+        <form class="form" id="clientForm" autocomplete="off">
+          <input type="hidden" id="editingId" />
+          <div class="field">
+            <label for="clientName">Client name</label>
+            <input id="clientName" name="clientName" required placeholder="e.g. Jordan Hill" />
+          </div>
+          <div class="split">
+            <div class="field">
+              <label for="serviceType">Service type</label>
+              <select id="serviceType" name="serviceType" required>
+                <option value="">Select service</option>
+                <option>Community Access</option>
+                <option>Daily Living Support</option>
+                <option>Transport Assistance</option>
+                <option>Respite Care</option>
+                <option>Supported Independent Living</option>
+              </select>
+            </div>
+            <div class="field">
+              <label for="priority">Priority</label>
+              <select id="priority" name="priority" required>
+                <option value="High">High</option>
+                <option value="Medium" selected>Medium</option>
+                <option value="Low">Low</option>
+              </select>
+            </div>
+          </div>
+          <div class="split">
+            <div class="field">
+              <label for="appointmentDate">Appointment date</label>
+              <input id="appointmentDate" name="appointmentDate" type="date" required />
+            </div>
+            <div class="field">
+              <label for="appointmentTime">Appointment time</label>
+              <input id="appointmentTime" name="appointmentTime" type="time" required />
+            </div>
+          </div>
+          <div class="split">
+            <div class="field">
+              <label for="supportWorker">Support worker</label>
+              <input id="supportWorker" name="supportWorker" placeholder="e.g. Ava Chen" />
+            </div>
+            <div class="field">
+              <label for="status">Status</label>
+              <select id="status" name="status" required>
+                <option>Active</option>
+                <option>Waiting</option>
+                <option>Paused</option>
+                <option>Completed</option>
+              </select>
+            </div>
+          </div>
+          <div class="split">
+            <div class="field">
+              <label for="phone">Contact number</label>
+              <input id="phone" name="phone" placeholder="e.g. 0412 345 678" />
+            </div>
+            <div class="field">
+              <label for="lastContact">Last contact</label>
+              <input id="lastContact" name="lastContact" type="date" />
+            </div>
+          </div>
+          <div class="field">
+            <label for="notes">Notes</label>
+            <textarea id="notes" name="notes" placeholder="Care preferences, risks, transport notes, or follow-up actions."></textarea>
+          </div>
+          <div class="form-actions">
+            <button class="btn btn-primary" type="submit" id="submitBtn">Save record</button>
+            <button class="btn btn-secondary" type="button" id="resetBtn">Reset form</button>
+          </div>
+          <p class="hint">Tip: use the list on the right to search, filter, edit, or delete each client record.</p>
+        </form>
+      </article>
+
+      <article class="panel list-panel">
+        <div class="section-head">
+          <div>
+            <h3>Client records</h3>
+            <p>Search, filter, and act on live client records.</p>
+          </div>
+        </div>
+
+        <div class="toolbar">
+          <label class="visually-hidden" for="searchInput">Search clients</label>
+          <input class="search" id="searchInput" type="search" placeholder="Search by name, worker, phone, or service" />
+          <select id="statusFilter" aria-label="Filter by status">
+            <option value="All">All status</option>
+            <option>Active</option>
+            <option>Waiting</option>
+            <option>Paused</option>
+            <option>Completed</option>
+          </select>
+          <select id="priorityFilter" aria-label="Filter by priority">
+            <option value="All">All priority</option>
+            <option>High</option>
+            <option>Medium</option>
+            <option>Low</option>
+          </select>
+          <button class="btn btn-secondary" id="sortBtn" type="button">Sort by appointment</button>
+        </div>
+
+        <div class="cards" id="cards"></div>
+        <div class="footer-note" id="resultsCount"></div>
+      </article>
+    </section>
+  </main>
+
+  <template id="cardTemplate">
+    <article class="card">
+      <div class="card-top">
+        <div>
+          <h4 class="client-name"></h4>
+          <p class="meta"></p>
+        </div>
+        <div class="pill-row"></div>
+      </div>
+      <div class="details">
+        <div class="detail">
+          <span>Appointment</span>
+          <strong class="appointment"></strong>
+        </div>
+        <div class="detail">
+          <span>Support worker</span>
+          <strong class="worker"></strong>
+        </div>
+        <div class="detail">
+          <span>Contact</span>
+          <strong class="contact"></strong>
+        </div>
+      </div>
+      <div class="detail">
+        <span>Notes</span>
+        <strong class="notes"></strong>
+      </div>
+      <div class="card-actions"></div>
+    </article>
+  </template>
+
+  <script>
+    const storageKey = "careconnect-clients";
+    const demoClients = [
+      {
+        id: crypto.randomUUID(),
+        clientName: "Jordan Hill",
+        serviceType: "Supported Independent Living",
+        priority: "High",
+        appointmentDate: futureDate(1),
+        appointmentTime: "09:30",
+        supportWorker: "Ava Chen",
+        status: "Active",
+        phone: "0412 345 678",
+        lastContact: futureDate(-2),
+        notes: "Morning routine support, medication prompt, and transport pickup before appointment."
+      },
+      {
+        id: crypto.randomUUID(),
+        clientName: "Mia Torres",
+        serviceType: "Community Access",
+        priority: "Medium",
+        appointmentDate: futureDate(4),
+        appointmentTime: "13:00",
+        supportWorker: "Riley Brooks",
+        status: "Waiting",
+        phone: "0422 844 991",
+        lastContact: futureDate(-5),
+        notes: "Needs wheelchair accessible transport and a community outing plan."
+      },
+      {
+        id: crypto.randomUUID(),
+        clientName: "Noah Patel",
+        serviceType: "Respite Care",
+        priority: "Low",
+        appointmentDate: futureDate(9),
+        appointmentTime: "15:15",
+        supportWorker: "Sofia Nguyen",
+        status: "Active",
+        phone: "0401 128 504",
+        lastContact: futureDate(-1),
+        notes: "Family respite booking confirmed. Follow up after staffing roster is finalised."
+      }
+    ];
+
+    const state = {
+      clients: loadClients(),
+      search: "",
+      status: "All",
+      priority: "All",
+      sortAscending: true
+    };
+
+    const form = document.getElementById("clientForm");
+    const cards = document.getElementById("cards");
+    const editingId = document.getElementById("editingId");
+    const formTitle = document.getElementById("formTitle");
+    const submitBtn = document.getElementById("submitBtn");
+    const resetBtn = document.getElementById("resetBtn");
+    const focusFormBtn = document.getElementById("focusFormBtn");
+    const seedDemoBtn = document.getElementById("seedDemoBtn");
+    const clearAllBtn = document.getElementById("clearAllBtn");
+    const searchInput = document.getElementById("searchInput");
+    const statusFilter = document.getElementById("statusFilter");
+    const priorityFilter = document.getElementById("priorityFilter");
+    const sortBtn = document.getElementById("sortBtn");
+    const resultsCount = document.getElementById("resultsCount");
+
+    const fields = [
+      "clientName",
+      "serviceType",
+      "priority",
+      "appointmentDate",
+      "appointmentTime",
+      "supportWorker",
+      "status",
+      "phone",
+      "lastContact",
+      "notes"
+    ];
+
+    document.addEventListener("DOMContentLoaded", () => {
+      const today = new Date().toISOString().slice(0, 10);
+      document.getElementById("appointmentDate").value = futureDate(2);
+      document.getElementById("lastContact").value = today;
+      wireEvents();
+      render();
+      updateStorageStatus();
+    });
+
+    function wireEvents() {
+      form.addEventListener("submit", handleSubmit);
+      resetBtn.addEventListener("click", resetForm);
+      focusFormBtn.addEventListener("click", () => {
+        document.getElementById("clientName").focus();
+        window.scrollTo({ top: 0, behavior: "smooth" });
+      });
+      seedDemoBtn.addEventListener("click", () => {
+        state.clients = [...demoClients];
+        persist();
+        render();
+      });
+      clearAllBtn.addEventListener("click", () => {
+        if (!state.clients.length) return;
+        if (confirm("Delete all client records? This cannot be undone.")) {
+          state.clients = [];
+          persist();
+          render();
+          resetForm();
+        }
+      });
+      searchInput.addEventListener("input", (event) => {
+        state.search = event.target.value.trim().toLowerCase();
+        render();
+      });
+      statusFilter.addEventListener("change", (event) => {
+        state.status = event.target.value;
+        render();
+      });
+      priorityFilter.addEventListener("change", (event) => {
+        state.priority = event.target.value;
+        render();
+      });
+      sortBtn.addEventListener("click", () => {
+        state.sortAscending = !state.sortAscending;
+        sortBtn.textContent = state.sortAscending ? "Sort by appointment" : "Sort by appointment";
+        render();
+      });
+    }
+
+    function handleSubmit(event) {
+      event.preventDefault();
+
+      const data = Object.fromEntries(new FormData(form).entries());
+      const record = {
+        id: editingId.value || crypto.randomUUID(),
+        clientName: data.clientName.trim(),
+        serviceType: data.serviceType,
+        priority: data.priority,
+        appointmentDate: data.appointmentDate,
+        appointmentTime: data.appointmentTime,
+        supportWorker: data.supportWorker.trim(),
+        status: data.status,
+        phone: data.phone.trim(),
+        lastContact: data.lastContact,
+        notes: data.notes.trim()
+      };
+
+      if (editingId.value) {
+        state.clients = state.clients.map((client) => client.id === editingId.value ? record : client);
+      } else {
+        state.clients = [record, ...state.clients];
+      }
+
+      persist();
+      render();
+      resetForm();
+    }
+
+    function render() {
+      const filtered = state.clients
+        .filter(matchesSearch)
+        .filter((client) => state.status === "All" || client.status === state.status)
+        .filter((client) => state.priority === "All" || client.priority === state.priority)
+        .sort((a, b) => compareAppointments(a, b) * (state.sortAscending ? 1 : -1));
+
+      cards.innerHTML = "";
+
+      if (!filtered.length) {
+        cards.innerHTML = `
+          <div class="empty">
+            <strong>No matching client records</strong>
+            <div>Try a different search term or load the sample records.</div>
+          </div>
+        `;
+      } else {
+        const template = document.getElementById("cardTemplate");
+        filtered.forEach((client) => {
+          const clone = template.content.cloneNode(true);
+          const card = clone.querySelector(".card");
+
+          clone.querySelector(".client-name").textContent = client.clientName;
+          clone.querySelector(".meta").textContent = `${client.serviceType} • ${client.status}`;
+          clone.querySelector(".appointment").textContent = formatDateTime(client.appointmentDate, client.appointmentTime);
+          clone.querySelector(".worker").textContent = client.supportWorker || "Unassigned";
+          clone.querySelector(".contact").textContent = client.phone || "Not provided";
+          clone.querySelector(".notes").textContent = client.notes || "No notes added yet.";
+
+          const pillRow = clone.querySelector(".pill-row");
+          pillRow.appendChild(createPill(client.priority, `priority-${client.priority.toLowerCase()}`));
+          pillRow.appendChild(createPill(client.status));
+          pillRow.appendChild(createPill(appointmentLabel(client.appointmentDate), appointmentStateClass(client.appointmentDate)));
+
+          const actions = clone.querySelector(".card-actions");
+          actions.appendChild(createActionButton("Edit", () => editRecord(client.id)));
+          actions.appendChild(createActionButton(client.status === "Completed" ? "Reopen" : "Mark complete", () => toggleCompletion(client.id)));
+          const deleteButton = createActionButton("Delete", () => deleteRecord(client.id));
+          deleteButton.classList.add("danger");
+          actions.appendChild(deleteButton);
+
+          if (isOverdue(client.appointmentDate, client.status)) {
+            card.style.borderColor = "rgba(255, 127, 138, 0.34)";
+          }
+
+          cards.appendChild(clone);
+        });
+      }
+
+      updateCounters(filtered);
+      resultsCount.textContent = `${filtered.length} record${filtered.length === 1 ? "" : "s"} shown from ${state.clients.length} total.`;
+    }
+
+    function updateCounters(filtered) {
+      document.getElementById("totalClients").textContent = state.clients.length;
+      document.getElementById("highPriorityCount").textContent = state.clients.filter((client) => client.priority === "High").length;
+      document.getElementById("upcomingCount").textContent = state.clients.filter((client) => isWithinNextWeek(client.appointmentDate)).length;
+      document.getElementById("overdueCount").textContent = state.clients.filter((client) => isOverdue(client.appointmentDate, client.status)).length;
+      document.getElementById("storageStatus").querySelector("span:last-child").textContent = state.clients.length ? "Records saved locally" : "Local storage active";
+    }
+
+    function matchesSearch(client) {
+      if (!state.search) return true;
+      const searchable = [client.clientName, client.serviceType, client.supportWorker, client.phone, client.notes, client.status, client.priority]
+        .join(" ")
+        .toLowerCase();
+      return searchable.includes(state.search);
+    }
+
+    function compareAppointments(a, b) {
+      const first = new Date(`${a.appointmentDate}T${a.appointmentTime || "00:00"}`);
+      const second = new Date(`${b.appointmentDate}T${b.appointmentTime || "00:00"}`);
+      return first - second;
+    }
+
+    function createPill(label, extraClass = "") {
+      const pill = document.createElement("span");
+      pill.className = `pill ${extraClass}`.trim();
+      pill.textContent = label;
+      return pill;
+    }
+
+    function createActionButton(label, onClick) {
+      const button = document.createElement("button");
+      button.type = "button";
+      button.textContent = label;
+      button.addEventListener("click", onClick);
+      return button;
+    }
+
+    function editRecord(id) {
+      const client = state.clients.find((entry) => entry.id === id);
+      if (!client) return;
+
+      editingId.value = client.id;
+      formTitle.textContent = "Edit client";
+      submitBtn.textContent = "Update record";
+
+      fields.forEach((field) => {
+        const element = form.elements.namedItem(field);
+        if (element) element.value = client[field] ?? "";
+      });
+
+      window.scrollTo({ top: 0, behavior: "smooth" });
+      document.getElementById("clientName").focus();
+    }
+
+    function deleteRecord(id) {
+      const client = state.clients.find((entry) => entry.id === id);
+      if (!client) return;
+      if (!confirm(`Delete ${client.clientName}'s record?`)) return;
+      state.clients = state.clients.filter((entry) => entry.id !== id);
+      persist();
+      render();
+      if (editingId.value === id) resetForm();
+    }
+
+    function toggleCompletion(id) {
+      state.clients = state.clients.map((client) => {
+        if (client.id !== id) return client;
+        return { ...client, status: client.status === "Completed" ? "Active" : "Completed" };
+      });
+      persist();
+      render();
+    }
+
+    function resetForm() {
+      form.reset();
+      editingId.value = "";
+      formTitle.textContent = "Add client";
+      submitBtn.textContent = "Save record";
+      document.getElementById("priority").value = "Medium";
+      document.getElementById("status").value = "Active";
+      document.getElementById("appointmentDate").value = futureDate(2);
+      document.getElementById("lastContact").value = new Date().toISOString().slice(0, 10);
+    }
+
+    function persist() {
+      localStorage.setItem(storageKey, JSON.stringify(state.clients));
+      updateStorageStatus();
+    }
+
+    function loadClients() {
+      const stored = localStorage.getItem(storageKey);
+      if (!stored) return [...demoClients];
+      try {
+        const parsed = JSON.parse(stored);
+        return Array.isArray(parsed) ? parsed : [...demoClients];
+      } catch {
+        return [...demoClients];
+      }
+    }
+
+    function updateStorageStatus() {
+      const statusText = state.clients.length ? "Records saved locally" : "Local storage active";
+      document.querySelector("#storageStatus span:last-child").textContent = statusText;
+    }
+
+    function appointmentLabel(dateValue) {
+      if (!dateValue) return "No date";
+      if (isOverdue(dateValue)) return "Overdue";
+      if (isToday(dateValue)) return "Today";
+      if (isWithinNextWeek(dateValue)) return "Upcoming";
+      return "Scheduled";
+    }
+
+    function appointmentStateClass(dateValue) {
+      if (isOverdue(dateValue)) return "alert";
+      if (isToday(dateValue) || isWithinNextWeek(dateValue)) return "warn";
+      return "ok";
+    }
+
+    function isOverdue(dateValue, status = "Active") {
+      if (!dateValue || status === "Completed") return false;
+      const due = startOfDay(dateValue);
+      return due < startOfDay(new Date());
+    }
+
+    function isToday(dateValue) {
+      return startOfDay(dateValue).getTime() === startOfDay(new Date()).getTime();
+    }
+
+    function isWithinNextWeek(dateValue) {
+      const target = startOfDay(dateValue).getTime();
+      const today = startOfDay(new Date()).getTime();
+      return target >= today && target <= today + 6 * 24 * 60 * 60 * 1000;
+    }
+
+    function startOfDay(value) {
+      const date = new Date(value);
+      date.setHours(0, 0, 0, 0);
+      return date;
+    }
+
+    function formatDateTime(dateValue, timeValue) {
+      if (!dateValue) return "Not scheduled";
+      const date = new Date(`${dateValue}T${timeValue || "00:00"}`);
+      return new Intl.DateTimeFormat(undefined, {
+        weekday: "short",
+        month: "short",
+        day: "numeric",
+        hour: "numeric",
+        minute: "2-digit"
+      }).format(date);
+    }
+
+    function futureDate(daysAhead) {
+      const date = new Date();
+      date.setDate(date.getDate() + daysAhead);
+      return date.toISOString().slice(0, 10);
+    }
+  </script>
+</body>
+</html>
